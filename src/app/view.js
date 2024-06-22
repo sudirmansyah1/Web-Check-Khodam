@@ -10,8 +10,10 @@ export default function Component() {
     const [name, setName] = useState("");
     const [khodam, setKhodam] = useState({});
     const [loading, setLoading] = useState(false);
+    
     // create register variable useForm
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
+
     // create function handle submit
     const onSubmit = async (data) => {
         setLoading(true);
@@ -38,6 +40,17 @@ export default function Component() {
         setName("");
         reset();
     }
+
+    const handleSpeak = () => {
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(`${name}, khodam kamu adalah ${khodam.label}, Khodam ini ${khodam.description}`);
+          // Set the language to Bahasa Indonesia (Indonesian)
+          utterance.lang = 'id-ID';
+          window.speechSynthesis.speak(utterance);
+        } else {
+          alert('Speech synthesis is not supported in your browser.');
+        }
+    };
 
     return (
         <div className="flex flex-col items-center justify-center w-full min-h-screen bg-gradient-to-br from-[#d0e9f2] to-[#e8f0f5] px-4 py-8 sm:px-6 md:px-8 lg:px-12 xl:px-16">
@@ -67,10 +80,19 @@ export default function Component() {
                             <CardTitle className="text-2xl font-bold">{name} Khodam Kamu Adalah {khodam.label}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4 text-muted-foreground">
-                            <p>
-                                {khodam.description}
-                            </p>
-                            <Button className="mt-10 w-full bg-black text-white" onClick={() => ResetKhodamSearch({})}>Reset</Button>
+                            <div>
+                                <p>
+                                    {khodam.description}
+                                </p>
+                            </div>
+                            <div className="flex">
+                                <div className="flex-none w-1/2 mr-3">
+                                    <Button onClick={handleSpeak} className="bg-black text-white w-full">Text to Voice</Button>
+                                </div>
+                                <div className="w-1/2">
+                                    <Button className="w-full bg-blue-500 text-white" onClick={() => ResetKhodamSearch({})}>Reset</Button>
+                                </div>
+                            </div>
                         </CardContent>
                     </>) : (<>
                         <CardHeader>
